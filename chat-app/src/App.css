@@ -22,6 +22,29 @@ header {
 .chat {
   flex-grow: 1; 
   overflow-y: auto; 
+  padding: 10px 20px;
+  border-left: 1px solid #090909;
+  border-right: 1px solid #090909;
+}
+
+.sent-message {
+  width: fit-content;
+  position: relative;
+  background-color: var(--recievedMessageBackground);
+  color: var(--recievedMessageText);
+  padding: 8px;
+  border-radius: 20px;
+}
+
+.sent-message::after {
+  content: "";
+  position: absolute;
+  left: -15px; /* adjust as needed */
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 9px;
+  border-style: solid;
+  border-color: transparent var(--recievedMessageBackground) transparent transparent;
 }
 
 footer {

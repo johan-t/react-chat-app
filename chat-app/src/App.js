@@ -6,7 +6,7 @@ function App() {
   const [newMessage, setNewMessage] = useState('');
 
   const handleSend = () => {
-    setMessages([...messages, newMessage]);
+    setMessages([...messages, newMessage]); // Add new message to the list of messages
     setNewMessage('');
   };
 
@@ -16,7 +16,10 @@ function App() {
         <h1>Group Chat</h1>
       </header>
       <div className='chat'>
-        {messages.map((message, index) => <p key={index}>{message}</p>)}
+        {messages.map((message, index) => 
+        <p className='sent-message' key={index}>
+          {message}
+        </p>)}
       </div>
       <footer>
         <input type="text" placeholder="Type a message" value={newMessage} onChange={e => setNewMessage(e.target.value)} />
