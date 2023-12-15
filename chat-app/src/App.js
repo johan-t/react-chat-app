@@ -16,13 +16,24 @@ function App() {
         <h1>Group Chat</h1>
       </header>
       <div className='chat'>
-        {messages.map((message, index) => 
-        <p className='sent-message' key={index}>
-          {message}
-        </p>)}
+        {messages.map((message, index) =>
+          <p className='sent-message' key={index}>
+            {message}
+          </p>)}
       </div>
       <footer>
-        <input type="text" placeholder="Type a message" value={newMessage} onChange={e => setNewMessage(e.target.value)} />
+        <input
+          type="text"
+          placeholder="Type a message"
+          value={newMessage}
+          onChange={e => setNewMessage(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              handleSend();
+              e.preventDefault(); // Prevents form submission
+            }
+          }}
+        />
         <button className="send-btn" onClick={handleSend}>➤</button>
       </footer>
     </div>
