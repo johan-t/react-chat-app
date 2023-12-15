@@ -1,8 +1,12 @@
+:root {
+  --containerWidth: 360px;
+}
+
 .chat-app {
   display: flex;
   flex-direction: column;
   position: relative;
-  width: 360px; 
+  width: var(--containerWidth); 
   height: 640px; 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); 
   margin: 50px auto; 
@@ -34,6 +38,7 @@ header {
   color: var(--recievedMessageText);
   padding: 8px;
   border-radius: 20px;
+  max-width: var(--containerWidth);
 }
 
 .sent-message::after {
