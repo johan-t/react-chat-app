@@ -30,7 +30,7 @@ function App() {
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleSend();
-              e.preventDefault(); // Prevents form submission
+              e.preventDefault(); 
             }
           }}
         />
