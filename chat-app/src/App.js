@@ -7,13 +7,24 @@ function App() {
   const chatEndRef = useRef(null);
 
   const handleSend = () => {
-    setMessages([...messages, newMessage]); // Add new message to the list of messages
-    setNewMessage('');
+    if (username) { // Only send message if username is set
+      setMessages([...messages, newMessage]); // Add new message to the list of messages
+      setNewMessage('');
+    }
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); // scrolls to the bottom div
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const [username, setUsername] = useState('');
+  const [hasEnteredName, setHasEnteredName] = useState(false);
+
+  const handleNameSubmit = () => {
+    if (username) {
+      setHasEnteredName(true);
+    }
+  };
 
   return (
     <div className='chat-app'>
@@ -21,10 +32,23 @@ function App() {
         <h1>Group Chat</h1>
       </header>
       <div className='chat'>
-        {messages.map((message, index) =>
-          <p className='sent-message' key={index}>
-            {message}
-          </p>)}
+        {!hasEnteredName ? (
+          <div className='name-prompt'>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
+            <button onClick={handleNameSubmit}>Enter</button>
+          </div>
+        ) : (
+          messages.map((message, index) =>
+            <p className='sent-message' key={index}>
+              {message}
+            </p>
+          )
+        )}
         <div ref={chatEndRef} />
       </div>
       <footer>
