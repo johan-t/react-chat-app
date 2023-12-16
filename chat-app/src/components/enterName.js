@@ -1,4 +1,5 @@
 import React from 'react';
+import './enterName.css';
 
 function EnterName({ username, setUsername, handleNameSubmit }) {
     return (
