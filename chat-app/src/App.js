@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+import './components/enterName.js';
+import EnterName from './components/enterName.js';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -7,9 +9,10 @@ function App() {
   const chatEndRef = useRef(null);
 
   const handleSend = () => {
-    if (newMessage) {
+    if (newMessage && hasEnteredName && !isSettingsOpen) {
       setMessages([...messages, { text: newMessage, timestamp: new Date() }]);
       setNewMessage('');
+      console.log(username)
     }
   };
 
@@ -23,39 +26,37 @@ function App() {
   const handleNameSubmit = () => {
     if (username) {
       setHasEnteredName(true);
+      setIsSettingsOpen(false);
     }
+  };
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(true);
   };
 
   return (
     <div className='chat-app'>
       <header>
         <h1>Group Chat</h1>
+        <button onClick={handleSettingsClick}>Settings</button>
       </header>
       <div className='chat'>
-        {!hasEnteredName ? (
-          <div className='name-prompt'>
-            <input
-              type="text"
-              placeholder="Enter your name"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  handleNameSubmit();
-                  e.preventDefault(); 
-                }
-              }}
-            />
-            <button onClick={handleNameSubmit}>Enter</button>
-          </div>
+        {(!hasEnteredName || isSettingsOpen) ? (
+          <EnterName
+            username={username}
+            setUsername={setUsername}
+            handleNameSubmit={handleNameSubmit}
+          />
         ) : (
           messages.map((message, index) =>
-          <div>
-            <p className='sent-message' key={index}>
-              {message.text}
-            </p>
-            <p className='time-and-name'>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-          </div>
+            <div key={index}>
+              <p className='sent-message'>
+                {message.text}
+              </p>
+              <p className='time-and-name'>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
           )
         )}
         <div ref={chatEndRef} />
@@ -69,7 +70,7 @@ function App() {
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleSend();
-              e.preventDefault(); 
+              e.preventDefault();
             }
           }}
         />
