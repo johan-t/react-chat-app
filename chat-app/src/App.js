@@ -7,8 +7,8 @@ function App() {
   const chatEndRef = useRef(null);
 
   const handleSend = () => {
-    if (username) { // Only send message if username is set
-      setMessages([...messages, newMessage]); // Add new message to the list of messages
+    if (newMessage) {
+      setMessages([...messages, { text: newMessage, timestamp: new Date() }]);
       setNewMessage('');
     }
   };
@@ -50,9 +50,12 @@ function App() {
           </div>
         ) : (
           messages.map((message, index) =>
+          <div>
             <p className='sent-message' key={index}>
-              {message}
+              {message.text}
             </p>
+            <p className='time-and-name'>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+          </div>
           )
         )}
         <div ref={chatEndRef} />

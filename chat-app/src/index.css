@@ -1,6 +1,11 @@
 :root {
   --recievedMessageBackground: #218aff;
   --recievedMessageText: #fff;
+  --time-and-name: #fffbfb00;
+
+  --containerWidth: 360px;
+
+  --text-size-s: 12px;
 }
 
 * {
