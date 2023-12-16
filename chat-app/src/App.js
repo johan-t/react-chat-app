@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
+import './components/enterName.js';
+import EnterName from './components/enterName.js';
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -7,24 +9,56 @@ function App() {
   const chatEndRef = useRef(null);
 
   const handleSend = () => {
-    setMessages([...messages, newMessage]); // Add new message to the list of messages
-    setNewMessage('');
+    if (newMessage && hasEnteredName && !isSettingsOpen) {
+      setMessages([...messages, { text: newMessage, timestamp: new Date() }]);
+      setNewMessage('');
+      console.log(username)
+    }
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); // scrolls to the bottom div
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const [username, setUsername] = useState('');
+  const [hasEnteredName, setHasEnteredName] = useState(false);
+
+  const handleNameSubmit = () => {
+    if (username) {
+      setHasEnteredName(true);
+      setIsSettingsOpen(false);
+    }
+  };
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(true);
+  };
 
   return (
     <div className='chat-app'>
       <header>
         <h1>Group Chat</h1>
+        <button onClick={handleSettingsClick}>Settings</button>
       </header>
       <div className='chat'>
-        {messages.map((message, index) =>
-          <p className='sent-message' key={index}>
-            {message}
-          </p>)}
+        {(!hasEnteredName || isSettingsOpen) ? (
+          <EnterName
+            username={username}
+            setUsername={setUsername}
+            handleNameSubmit={handleNameSubmit}
+          />
+        ) : (
+          messages.map((message, index) =>
+            <div key={index}>
+              <p className='sent-message'>
+                {message.text}
+              </p>
+              <p className='time-and-name'>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
+          )
+        )}
         <div ref={chatEndRef} />
       </div>
       <footer>
@@ -36,7 +70,7 @@ function App() {
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleSend();
-              e.preventDefault(); 
+              e.preventDefault();
             }
           }}
         />
