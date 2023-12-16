@@ -38,15 +38,22 @@ header {
   max-width: var(--containerWidth);
 }
 
+.message-container {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column; /* Stack items vertically */
+  align-items: flex-end; /* Align items to the right */
+}
+
 .sent-message::after {
   content: "";
   position: absolute;
-  left: -15px; 
+  right: -15px; 
   top: 50%;
   transform: translateY(-50%);
   border-width: 9px;
   border-style: solid;
-  border-color: transparent var(--recievedMessageBackground) transparent transparent;
+  border-color: transparent transparent transparent var(--recievedMessageBackground); /* Adjusted border-color */
 }
 
 .time-and-name {

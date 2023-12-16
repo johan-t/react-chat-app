@@ -51,11 +51,13 @@ function App() {
           />
         ) : (
           messages.map((message, index) =>
-            <div key={index}>
+            <div key={index} className='message-container'>
               <p className='sent-message'>
                 {message.text}
               </p>
-              <p className='time-and-name'>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+              <p className='time-and-name'>
+                {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
             </div>
           )
         )}
