@@ -41,8 +41,8 @@ header {
 .message-container {
   display: flex;
   justify-content: flex-end;
-  flex-direction: column; /* Stack items vertically */
-  align-items: flex-end; /* Align items to the right */
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .sent-message::after {
