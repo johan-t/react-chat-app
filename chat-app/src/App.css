@@ -27,15 +27,24 @@ header {
   border-right: 1px solid #090909;
 }
 
-.sent-message {
+.message {
   width: fit-content;
   position: relative;
-  background-color: var(--recievedMessageBackground);
   color: var(--recievedMessageText);
   padding: 8px;
   margin-bottom: 5px;
   border-radius: 20px;
   max-width: var(--containerWidth);
+}
+
+.sent {
+  background-color: var(--recievedMessageBackground);
+
+}
+
+.typing {
+  background-color: var(--recievedMessageBackground);
+  filter: opacity(0.5);
 }
 
 .message-container {

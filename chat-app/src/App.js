@@ -53,7 +53,7 @@ function App() {
           <>
             {messages.map((message, index) =>
               <div key={index} className='message-container'>
-                <p className='sent-message'>
+                <p className='message sent'>
                   {message.text}
                 </p>
                 <p className='time-and-name'>
@@ -63,7 +63,7 @@ function App() {
             )}
             {newMessage && (
               <div className='message-container'>
-                <p className='sent-message'>
+                <p className='message typing'>
                   {newMessage}
                 </p>
                 <p className='time-and-name'>
