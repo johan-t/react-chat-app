@@ -83,16 +83,15 @@ function App() {
         ) : (
           <>
             {messages.map((message, index) => (
-              <div key={index} className='message-container'>
-                <p className='message sent'>
+              <div key={index} className={`message-container ${message.username === username ? 'own-message' : 'other-message'}`}>
+                <p className={message.username === username ? 'message sent own' : 'message sent other'}>
                   {message.text}
                 </p>
-                <p className='time-and-name'>
+                <p className={`time-and-name ${message.username === username ? 'own-message' : 'other-message'}`}>
                   {message.username} - {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
             ))}
-
             {newMessage && (
               <div className='message-container'>
                 <p className='message typing'>
