@@ -62,15 +62,25 @@ header {
   flex-direction: column;
 }
 
-.sent-message::after {
+.own-message .message::after {
   content: "";
   position: absolute;
-  right: -15px; 
+  right: -15px;
   top: 50%;
   transform: translateY(-50%);
   border-width: 9px;
   border-style: solid;
-  border-color: transparent transparent transparent var(--recievedMessageBackground); /* Adjusted border-color */
+  border-color: transparent transparent transparent var(--sentMessageBackground);
+}
+
+.other-message .message::after {
+  content: "";
+  position: absolute;
+  left: -15px;
+  rotate: 180deg;
+  border-width: 9px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--receivedMessageBackground);
 }
 
 .time-and-name {
