@@ -2,8 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import './components/enterName.js';
 import EnterName from './components/enterName.js';
+import * as Y from "yjs";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 function App() {
+
+  // Connect it to the backend
+  const provider = new HocuspocusProvider({
+    url: "ws://127.0.0.1:1234",
+    name: "messages",
+  });
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const chatEndRef = useRef(null);
