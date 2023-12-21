@@ -50,12 +50,10 @@ function App() {
       setNewMessage('');
     }
     typingState.delete(userId); // Use userId to delete the typing state
+    //console.log the currently send message
+    console.log(newMessage);
   };  
 
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   const [username, setUsername] = useState('');
   const [hasEnteredName, setHasEnteredName] = useState(false);
@@ -100,6 +98,9 @@ function App() {
     };
   }, [username]);
 
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, hasEnteredName]);
 
   return (
     <div className='chat-app'>
