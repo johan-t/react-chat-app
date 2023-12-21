@@ -93,11 +93,11 @@ function App() {
               </div>
             ))}
             {newMessage && (
-              <div className='message-container'>
-                <p className='message typing'>
+              <div className='message-container own-message'>
+                <p className='message typing own'>
                   {newMessage}
                 </p>
-                <p className='time-and-name'>
+                <p className='time-and-name own-message'>
                   Typing...
                 </p>
               </div>
