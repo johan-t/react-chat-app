@@ -130,11 +130,12 @@ function App() {
                 </p>
               </div>
             )}
-            <div className='typing-messages'>
               {Object.entries(typingUsers).map(([user, message]) => (
-                <p key={user}>{`${user} is typing: ${message}`}</p>
+                <div key={user} className='message-container other-message'>
+                  <p className='message typing other'>{message}</p>
+                  <p className='time-and-name other-message'>{user} - Typing...</p>
+                </div>
               ))}
-            </div>
           </>
         )}
         <div ref={chatEndRef} />
