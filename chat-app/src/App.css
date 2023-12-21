@@ -37,9 +37,15 @@ header {
   max-width: var(--containerWidth);
 }
 
-.sent {
-  background-color: var(--recievedMessageBackground);
+.own-message .own {
+  background-color: var(--sentMessageBackground); /* color for own messages */
+  align-self: flex-end;
+}
 
+.other-message .other {
+  background-color: var(--receivedMessageBackground);
+  color: #090909;
+  align-self: flex-start;
 }
 
 .typing {
@@ -47,28 +53,45 @@ header {
   filter: opacity(0.5);
 }
 
-.message-container {
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
-  align-items: flex-end;
+.typing .other {
+  color: black;
 }
 
-.sent-message::after {
+.message-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.own-message .message::after {
   content: "";
   position: absolute;
-  right: -15px; 
+  right: -15px;
   top: 50%;
   transform: translateY(-50%);
   border-width: 9px;
   border-style: solid;
-  border-color: transparent transparent transparent var(--recievedMessageBackground); /* Adjusted border-color */
+  border-color: transparent transparent transparent var(--sentMessageBackground);
+}
+
+.other-message .message::after {
+  content: "";
+  position: absolute;
+  left: -15px;
+  rotate: 180deg;
+  border-width: 9px;
+  border-style: solid;
+  border-color: transparent transparent transparent var(--receivedMessageBackground);
 }
 
 .time-and-name {
   margin: 0;
   font-size: var(--text-size-s);
 }
+
+.time-and-name.own-message {
+  text-align: right;
+}
+
 
 footer {
   bottom: 0;

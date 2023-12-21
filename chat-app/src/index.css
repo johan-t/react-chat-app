@@ -1,5 +1,6 @@
 :root {
-  --recievedMessageBackground: #218aff;
+  --receivedMessageBackground: #e5e5ea88;
+  --sentMessageBackground: #218aff;
   --recievedMessageText: #fff;
   --time-and-name: #fffbfb00;
 
