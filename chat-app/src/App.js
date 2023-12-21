@@ -9,6 +9,7 @@ function App() {
   // Create a Yjs document
   const ydoc = new Y.Doc();
   const sharedMessages = ydoc.getArray('messages');
+  const typingState = ydoc.getMap('typingState');
 
   // Connect it to the backend
   const provider = new HocuspocusProvider({
@@ -44,6 +45,7 @@ function App() {
       sharedMessages.push([{ text: newMessage, timestamp: new Date().toISOString(), username }]);
       setNewMessage('');
     }
+    typingState.delete(username);
   };
 
 
@@ -66,6 +68,32 @@ function App() {
   const handleSettingsClick = () => {
     setIsSettingsOpen(true);
   };
+
+  const handleTyping = (e) => {
+    setNewMessage(e.target.value);
+    typingState.set(username, e.target.value);
+  };
+
+  const [typingUsers, setTypingUsers] = useState({});
+
+  useEffect(() => {
+    const updateTypingUsers = () => {
+      const typing = {};
+      typingState.forEach((message, user) => {
+        if (message && user !== username) {
+          typing[user] = message;
+        }
+      });
+      setTypingUsers(typing);
+    };
+
+    typingState.observe(updateTypingUsers);
+    updateTypingUsers();
+
+    return () => {
+      typingState.unobserve(updateTypingUsers);
+    };
+  }, [username]);
 
   return (
     <div className='chat-app'>
@@ -102,6 +130,11 @@ function App() {
                 </p>
               </div>
             )}
+            <div className='typing-messages'>
+              {Object.entries(typingUsers).map(([user, message]) => (
+                <p key={user}>{`${user} is typing: ${message}`}</p>
+              ))}
+            </div>
           </>
         )}
         <div ref={chatEndRef} />
@@ -111,7 +144,7 @@ function App() {
           type="text"
           placeholder="Type a message"
           value={newMessage}
-          onChange={e => setNewMessage(e.target.value)}
+          onChange={handleTyping}
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleSend();
