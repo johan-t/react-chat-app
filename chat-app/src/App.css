@@ -26,8 +26,22 @@ header, footer {
 }
 
 header {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
   border: 1px solid #090909;
   border-radius: 20px 20px 0 0;
+  padding: 10px; 
+}
+
+header h1 {
+  margin: 0;
+  flex: 0 1 auto; 
+}
+
+header button {
+  margin: 0;
+  flex: 0 0 auto; 
 }
 
 .chat {
