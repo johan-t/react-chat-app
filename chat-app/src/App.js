@@ -22,15 +22,19 @@ function App() {
   const [newMessage, setNewMessage] = useState('');
   const chatEndRef = useRef(null);
 
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    // Generate a unique ID when the app is loaded
+    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    setUserId(uniqueId);
+  }, []);
+
   useEffect(() => {
     const updateMessages = () => {
       setMessages(sharedMessages.toArray());
     };
-
-    // Listen for changes on the sharedMessages
     sharedMessages.observe(updateMessages);
-
-    // Initial update
     updateMessages();
 
     // Cleanup observer on unmount
@@ -41,12 +45,12 @@ function App() {
 
   const handleSend = () => {
     if (newMessage && hasEnteredName && !isSettingsOpen) {
-      // Add the new message along with the username to the shared array
-      sharedMessages.push([{ text: newMessage, timestamp: new Date().toISOString(), username }]);
+      // Include the userId when adding the new message
+      sharedMessages.push([{ text: newMessage, timestamp: new Date().toISOString(), username, userId }]);
       setNewMessage('');
     }
-    typingState.delete(username);
-  };
+    typingState.delete(userId); // Use userId to delete the typing state
+  };  
 
 
   useEffect(() => {
@@ -71,21 +75,22 @@ function App() {
 
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
-    typingState.set(username, e.target.value);
-  };
+    typingState.set(userId, { username: username, message: e.target.value }); // Use userId as the key
+  };  
 
   const [typingUsers, setTypingUsers] = useState({});
 
   useEffect(() => {
     const updateTypingUsers = () => {
       const typing = {};
-      typingState.forEach((message, user) => {
-        if (message && user !== username) {
-          typing[user] = message;
+      typingState.forEach((typingInfo, id) => {
+        if (typingInfo.message && id !== userId) { // Compare with userId, not username
+          typing[typingInfo.username] = typingInfo.message;
         }
       });
       setTypingUsers(typing);
     };
+    
 
     typingState.observe(updateTypingUsers);
     updateTypingUsers();
@@ -94,6 +99,7 @@ function App() {
       typingState.unobserve(updateTypingUsers);
     };
   }, [username]);
+
 
   return (
     <div className='chat-app'>
@@ -111,11 +117,11 @@ function App() {
         ) : (
           <>
             {messages.map((message, index) => (
-              <div key={index} className={`message-container ${message.username === username ? 'own-message' : 'other-message'}`}>
-                <p className={message.username === username ? 'message sent own' : 'message sent other'}>
+              <div key={index} className={`message-container ${message.userId === userId ? 'own-message' : 'other-message'}`}>
+                <p className={message.userId === userId ? 'message sent own' : 'message sent other'}>
                   {message.text}
                 </p>
-                <p className={`time-and-name ${message.username === username ? 'own-message' : 'other-message'}`}>
+                <p className={`time-and-name ${message.userId === userId ? 'own-message' : 'other-message'}`}>
                   {message.username} - {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
@@ -130,12 +136,12 @@ function App() {
                 </p>
               </div>
             )}
-              {Object.entries(typingUsers).map(([user, message]) => (
-                <div key={user} className='message-container other-message'>
-                  <p className='message typing other'>{message}</p>
-                  <p className='time-and-name other-message'>{user} - Typing...</p>
-                </div>
-              ))}
+            {Object.entries(typingUsers).map(([user, message]) => (
+              <div key={user} className='message-container other-message'>
+                <p className='message typing other'>{message}</p>
+                <p className='time-and-name other-message'>{user} - Typing...</p>
+              </div>
+            ))}
           </>
         )}
         <div ref={chatEndRef} />
