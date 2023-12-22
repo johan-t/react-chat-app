@@ -6,12 +6,10 @@ import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 function App() {
-  // Create a Yjs document
   const ydoc = new Y.Doc();
   const sharedMessages = ydoc.getArray('messages');
   const typingState = ydoc.getMap('typingState');
 
-  // Connect it to the backend
   const provider = new HocuspocusProvider({
     url: "ws://127.0.0.1:1234",
     name: "messages",
@@ -25,27 +23,24 @@ function App() {
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
-    // Generate a unique ID when the app is loaded
     const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
     setUserId(uniqueId);
   }, []);
 
   const handleSend = () => {
-    if (newMessage && hasEnteredName && !isSettingsOpen) {
-      // Include the userId when adding the new message
+    if (newMessage && hasEnteredName && !isSettingsOpen) { // don't send empty messages, before entering name or while settings are open
       sharedMessages.push([{ text: newMessage, timestamp: new Date().toISOString(), username, userId }]);
       setNewMessage('');
     }
-    typingState.delete(userId); // Use userId to delete the typing state
+    typingState.delete(userId);
   };
-
 
   const [username, setUsername] = useState('');
   const [hasEnteredName, setHasEnteredName] = useState(false);
 
+  // load messages from sharedMessages array
   useEffect(() => {
     const updateMessages = () => {
-      // Get the current array from Yjs
       const yjsMessages = sharedMessages.toArray();
       const sortedMessages = yjsMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
       setMessages(sortedMessages);
@@ -54,7 +49,6 @@ function App() {
     sharedMessages.observe(updateMessages);
     updateMessages();
   
-    // Cleanup observer on unmount
     return () => {
       sharedMessages.unobserve(updateMessages);
     };
@@ -75,17 +69,16 @@ function App() {
 
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
-    typingState.set(userId, { username: username, message: e.target.value }); // Use userId as the key
+    typingState.set(userId, { username: username, message: e.target.value });
   };
 
   const [typingUsers, setTypingUsers] = useState({});
 
+  // load typing users from typingState map
   useEffect(() => {
-    // Define the function inside the effect to ensure it has the latest state
     const updateTypingUsers = () => {
       const typing = {};
       typingState.forEach((typingInfo, id) => {
-        // Store the entire typingInfo object, not just the message
         if (typingInfo.message && id !== userId) {
           typing[id] = typingInfo;
         }
@@ -96,7 +89,6 @@ function App() {
     typingState.observe(updateTypingUsers);
     updateTypingUsers();
 
-    // Cleanup observer on unmount or when typingState changes
     return () => {
       typingState.unobserve(updateTypingUsers);
     };
@@ -150,7 +142,7 @@ function App() {
                   </div>
                 );
               }
-              return null; // Don't show anything for the current user
+              return null; 
             })}
           </>
         )}
