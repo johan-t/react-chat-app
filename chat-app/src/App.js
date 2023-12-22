@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
 import './components/enterName.js';
 import EnterName from './components/enterName.js';
@@ -30,19 +30,6 @@ function App() {
     setUserId(uniqueId);
   }, []);
 
-  useEffect(() => {
-    const updateMessages = () => {
-      setMessages(sharedMessages.toArray());
-    };
-    sharedMessages.observe(updateMessages);
-    updateMessages();
-
-    // Cleanup observer on unmount
-    return () => {
-      sharedMessages.unobserve(updateMessages);
-    };
-  }, []);
-
   const handleSend = () => {
     if (newMessage && hasEnteredName && !isSettingsOpen) {
       // Include the userId when adding the new message
@@ -50,13 +37,28 @@ function App() {
       setNewMessage('');
     }
     typingState.delete(userId); // Use userId to delete the typing state
-    //console.log the currently send message
-    console.log(newMessage);
-  };  
+  };
 
 
   const [username, setUsername] = useState('');
   const [hasEnteredName, setHasEnteredName] = useState(false);
+
+  useEffect(() => {
+    const updateMessages = () => {
+      // Get the current array from Yjs
+      const yjsMessages = sharedMessages.toArray();
+      const sortedMessages = yjsMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      setMessages(sortedMessages);
+    };
+  
+    sharedMessages.observe(updateMessages);
+    updateMessages();
+  
+    // Cleanup observer on unmount
+    return () => {
+      sharedMessages.unobserve(updateMessages);
+    };
+  }, []);    
 
   const handleNameSubmit = () => {
     if (username) {
@@ -74,29 +76,31 @@ function App() {
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
     typingState.set(userId, { username: username, message: e.target.value }); // Use userId as the key
-  };  
+  };
 
   const [typingUsers, setTypingUsers] = useState({});
 
   useEffect(() => {
+    // Define the function inside the effect to ensure it has the latest state
     const updateTypingUsers = () => {
       const typing = {};
       typingState.forEach((typingInfo, id) => {
-        if (typingInfo.message && id !== userId) { // Compare with userId, not username
-          typing[typingInfo.username] = typingInfo.message;
+        // Store the entire typingInfo object, not just the message
+        if (typingInfo.message && id !== userId) {
+          typing[id] = typingInfo;
         }
       });
       setTypingUsers(typing);
     };
-    
 
     typingState.observe(updateTypingUsers);
     updateTypingUsers();
 
+    // Cleanup observer on unmount or when typingState changes
     return () => {
       typingState.unobserve(updateTypingUsers);
     };
-  }, [username]);
+  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -137,12 +141,17 @@ function App() {
                 </p>
               </div>
             )}
-            {Object.entries(typingUsers).map(([user, message]) => (
-              <div key={user} className='message-container other-message'>
-                <p className='message typing other'>{message}</p>
-                <p className='time-and-name other-message'>{user} - Typing...</p>
-              </div>
-            ))}
+            {Object.entries(typingUsers).map(([id, typingInfo]) => {
+              if (id !== userId) {
+                return (
+                  <div key={id} className='message-container other-message'>
+                    <p className='message typing other'>{typingInfo.message}</p>
+                    <p className='time-and-name other-message'>{typingInfo.username} - Typing...</p>
+                  </div>
+                );
+              }
+              return null; // Don't show anything for the current user
+            })}
           </>
         )}
         <div ref={chatEndRef} />
